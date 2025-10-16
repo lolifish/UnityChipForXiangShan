@@ -1,100 +1,4 @@
-from toffee import Bundle, Signals
-
-class WayLookupBundle(Bundle):
-    # 基本控制信号
-    flush, reset = Signals(2)
-    read_ready, read_valid = Signals(2)
-    write_ready, write_valid = Signals(2)
-    update_valid = Signals(1)
-
-    # write / read entry 数据
-    write_vSetIdx_0, write_vSetIdx_1 = Signals(2)
-    write_waymask_0, write_waymask_1 = Signals(2)
-    write_ptag_0, write_ptag_1 = Signals(2)
-    write_itlb_exception_0, write_itlb_exception_1 = Signals(2)
-    write_itlb_pbmt_0, write_itlb_pbmt_1 = Signals(2)
-    write_meta_codes_0, write_meta_codes_1 = Signals(2)
-
-    read_vSetIdx_0, read_vSetIdx_1 = Signals(2)
-    read_waymask_0, read_waymask_1 = Signals(2)
-    read_ptag_0, read_ptag_1 = Signals(2)
-    read_itlb_exception_0, read_itlb_exception_1 = Signals(2)
-    read_itlb_pbmt_0, read_itlb_pbmt_1 = Signals(2)
-    read_meta_codes_0, read_meta_codes_1 = Signals(2)
-
-    # GPF 相关
-    write_gpf_gpaddr, write_gpf_isForVSnonLeafPTE = Signals(2)
-    read_gpf_gpaddr, read_gpf_isForVSnonLeafPTE = Signals(2)
-
-    # update 相关
-    blkPaddr, corrupt, vSetIdx, waymask = Signals(4)
-
-    # 内部信号
-    # 读写指针
-    readPtr_value, readPtr_flag, writePtr_value, writePtr_flag = Signals(4)
-    # gpf
-    gpf_hit, gpf_valid, gpf_bits = Signals(3)
-    # upate
-    vset_same, vset_same_1, vset_same_2, vset_same_3, vset_same_4, vset_same_5, vset_same_6, vset_same_7, vset_same_8, vset_same_9, vset_same_10, vset_same_11, vset_same_12, vset_same_13, vset_same_14, vset_same_15, vset_same_16, vset_same_17, vset_same_18, vset_same_19, vset_same_20, vset_same_21, vset_same_22, vset_same_23, vset_same_24, vset_same_25, vset_same_26, vset_same_27, vset_same_28, vset_same_29, vset_same_30, vset_same_31, vset_same_32, vset_same_33, vset_same_34, vset_same_35, vset_same_36, vset_same_37, vset_same_38, vset_same_39, vset_same_40, vset_same_41, vset_same_42, vset_same_43, vset_same_44, vset_same_45, vset_same_46, vset_same_47, vset_same_48, vset_same_49, vset_same_50, vset_same_51, vset_same_52, vset_same_53, vset_same_54, vset_same_55, vset_same_56, vset_same_57, vset_same_58, vset_same_59, vset_same_60, vset_same_61, vset_same_62, vset_same_63, ptag_same, ptag_same_1, ptag_same_2, ptag_same_3, ptag_same_4, ptag_same_5, ptag_same_6, ptag_same_7, ptag_same_8, ptag_same_9, ptag_same_10, ptag_same_11, ptag_same_12, ptag_same_13, ptag_same_14, ptag_same_15, ptag_same_16, ptag_same_17, ptag_same_18, ptag_same_19, ptag_same_20, ptag_same_21, ptag_same_22, ptag_same_23, ptag_same_24, ptag_same_25, ptag_same_26, ptag_same_27, ptag_same_28, ptag_same_29, ptag_same_30, ptag_same_31, ptag_same_32, ptag_same_33, ptag_same_34, ptag_same_35, ptag_same_36, ptag_same_37, ptag_same_38, ptag_same_39, ptag_same_40, ptag_same_41, ptag_same_42, ptag_same_43, ptag_same_44, ptag_same_45, ptag_same_46, ptag_same_47, ptag_same_48, ptag_same_49, ptag_same_50, ptag_same_51, ptag_same_52, ptag_same_53, ptag_same_54, ptag_same_55, ptag_same_56, ptag_same_57, ptag_same_58, ptag_same_59, ptag_same_60, ptag_same_61, ptag_same_62, ptag_same_63, entries_0_waymask_0, entries_0_waymask_1, entries_1_waymask_0, entries_1_waymask_1, entries_2_waymask_0, entries_2_waymask_1, entries_3_waymask_0, entries_3_waymask_1, entries_4_waymask_0, entries_4_waymask_1, entries_5_waymask_0, entries_5_waymask_1, entries_6_waymask_0, entries_6_waymask_1, entries_7_waymask_0, entries_7_waymask_1, entries_8_waymask_0, entries_8_waymask_1, entries_9_waymask_0, entries_9_waymask_1, entries_10_waymask_0, entries_10_waymask_1, entries_11_waymask_0, entries_11_waymask_1, entries_12_waymask_0, entries_12_waymask_1, entries_13_waymask_0, entries_13_waymask_1, entries_14_waymask_0, entries_14_waymask_1, entries_15_waymask_0, entries_15_waymask_1, entries_16_waymask_0, entries_16_waymask_1, entries_17_waymask_0, entries_17_waymask_1, entries_18_waymask_0, entries_18_waymask_1, entries_19_waymask_0, entries_19_waymask_1, entries_20_waymask_0, entries_20_waymask_1, entries_21_waymask_0, entries_21_waymask_1, entries_22_waymask_0, entries_22_waymask_1, entries_23_waymask_0, entries_23_waymask_1, entries_24_waymask_0, entries_24_waymask_1, entries_25_waymask_0, entries_25_waymask_1, entries_26_waymask_0, entries_26_waymask_1, entries_27_waymask_0, entries_27_waymask_1, entries_28_waymask_0, entries_28_waymask_1, entries_29_waymask_0, entries_29_waymask_1, entries_30_waymask_0, entries_30_waymask_1, entries_31_waymask_0, entries_31_waymask_1 = Signals(64*3)
-
-bundle_dict = {
-    # io信号
-    # 基本控制
-    "flush": "io_flush",
-    "reset": "reset",
-    "read_ready": "io_read_ready",
-    "read_valid": "io_read_valid",
-    "write_ready": "io_write_ready",
-    "write_valid": "io_write_valid",
-    "update_valid": "io_update_valid",
-    # 读/写 entry
-    "write_vSetIdx_0": "io_write_bits_entry_vSetIdx_0",
-    "write_vSetIdx_1": "io_write_bits_entry_vSetIdx_1",
-    "write_waymask_0": "io_write_bits_entry_waymask_0",
-    "write_waymask_1": "io_write_bits_entry_waymask_1",
-    "write_ptag_0": "io_write_bits_entry_ptag_0",
-    "write_ptag_1": "io_write_bits_entry_ptag_1",
-    "write_itlb_exception_0": "io_write_bits_entry_itlb_exception_0",
-    "write_itlb_exception_1": "io_write_bits_entry_itlb_exception_1",
-    "write_itlb_pbmt_0": "io_write_bits_entry_itlb_pbmt_0",
-    "write_itlb_pbmt_1": "io_write_bits_entry_itlb_pbmt_1",
-    "write_meta_codes_0": "io_write_bits_entry_meta_codes_0",
-    "write_meta_codes_1": "io_write_bits_entry_meta_codes_1",
-    # 读通路
-    "read_vSetIdx_0": "io_read_bits_entry_vSetIdx_0",
-    "read_vSetIdx_1": "io_read_bits_entry_vSetIdx_1",
-    "read_waymask_0": "io_read_bits_entry_waymask_0",
-    "read_waymask_1": "io_read_bits_entry_waymask_1",
-    "read_ptag_0": "io_read_bits_entry_ptag_0",
-    "read_ptag_1": "io_read_bits_entry_ptag_1",
-    "read_itlb_exception_0": "io_read_bits_entry_itlb_exception_0",
-    "read_itlb_exception_1": "io_read_bits_entry_itlb_exception_1",
-    "read_itlb_pbmt_0": "io_read_bits_entry_itlb_pbmt_0",
-    "read_itlb_pbmt_1": "io_read_bits_entry_itlb_pbmt_1",
-    "read_meta_codes_0": "io_read_bits_entry_meta_codes_0",
-    "read_meta_codes_1": "io_read_bits_entry_meta_codes_1",
-    # GPF
-    "write_gpf_gpaddr": "io_write_bits_gpf_gpaddr",
-    "write_gpf_isForVSnonLeafPTE": "io_write_bits_gpf_isForVSnonLeafPTE",
-    "read_gpf_gpaddr": "io_read_bits_gpf_gpaddr",
-    "read_gpf_isForVSnonLeafPTE": "io_read_bits_gpf_isForVSnonLeafPTE",
-    # update
-    "blkPaddr": "io_update_bits_blkPaddr",
-    "corrupt": "io_update_bits_corrupt",
-    "vSetIdx": "io_update_bits_vSetIdx",
-    "waymask": "io_update_bits_waymask",
-
-    # 内部信号
-    # 读写指针
-    "readPtr_value": "WayLookup_readPtr_value",
-    "readPtr_flag": "WayLookup_readPtr_flag",
-    "writePtr_value": "WayLookup_writePtr_value",
-    "writePtr_flag": "WayLookup_writePtr_flag",
-    # GPF
-    "gpf_hit": "WayLookup_gpf_hit",
-    "gpf_valid": "WayLookup_gpf_entry_valid",
-    "gpf_bits": "WayLookup_gpf_entry_bits_gpaddr",
-    # Update相关
+signal_map = {
     "vset_same": "WayLookup_vset_same",
     "vset_same_1": "WayLookup_vset_same_1",
     "vset_same_2": "WayLookup_vset_same_2",
@@ -288,3 +192,14 @@ bundle_dict = {
     "entries_31_waymask_0": "WayLookup_entries_31_waymask_0",
     "entries_31_waymask_1": "WayLookup_entries_31_waymask_1"
 }
+
+print(", ".join(list(signal_map.keys())))
+print("-"*100)
+print(" or ".join(
+    ["bundle."+i+".value" for i in signal_map.keys()]
+))
+print("-"*100)
+print(" or ".join(
+    ["bundle."+i+".value==bundle.waymask.value" for i in signal_map.keys()]
+))
+

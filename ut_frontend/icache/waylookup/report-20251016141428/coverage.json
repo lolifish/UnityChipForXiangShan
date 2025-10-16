@@ -1,0 +1,80 @@
+{
+  "description": "Code coverage summary. `data` field contains uncovered lines",
+  "simulator": "verilator",
+  "overview": {
+    "schema": [
+      "total_line",
+      "miss_line"
+    ],
+    "data": [
+      5184,
+      26
+    ]
+  },
+  "uncovered": {
+    "schema": {
+      "file_path": {
+        "module": {
+          "line": [
+            "line"
+          ],
+          "toggle": [
+            "line"
+          ],
+          "branch": [
+            "line"
+          ],
+          "expr": [
+            "line"
+          ]
+        }
+      }
+    },
+    "data": {
+      "/home/lolifish/Documents/programs/XiangShan_UVM/UnityChipForXiangShan/dut/WayLookup/WayLookup.v": {
+        "WayLookup": {
+          "branch": [
+            "2250-2250"
+          ],
+          "line": [],
+          "toggle": [],
+          "expr": []
+        }
+      },
+      "/home/lolifish/Documents/programs/XiangShan_UVM/UnityChipForXiangShan/dut/WayLookup/WayLookup_top.sv": {
+        "WayLookup_top": {
+          "line": [
+            "364-366",
+            "374-376",
+            "384-386",
+            "394-396",
+            "484-486",
+            "494-496",
+            "504-506",
+            "514-516",
+            "524-526",
+            "534-536",
+            "544-546",
+            "554-556",
+            "564-566",
+            "574-576",
+            "584-586",
+            "594-596",
+            "604-606",
+            "614-616",
+            "624-626",
+            "634-636",
+            "644-646",
+            "654-656",
+            "664-666",
+            "674-676",
+            "1737-1738"
+          ],
+          "toggle": [],
+          "branch": [],
+          "expr": []
+        }
+      }
+    }
+  }
+}

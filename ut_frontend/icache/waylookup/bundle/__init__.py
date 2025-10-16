@@ -1,1 +1,1 @@
-from .waylookup_bundle import WayLookupBundle
+from .waylookup_bundle import WayLookupBundle, bundle_dict
