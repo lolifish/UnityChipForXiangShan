@@ -1,5 +1,6 @@
 from typing import Optional, Tuple
 from toffee.model import Model, driver_hook
+from copy import deepcopy
 
 from .data_model import *
 
@@ -48,11 +49,6 @@ class WayLookupModel(Model):
             return False, None, False, None
         # 读数据
         data: EntryData = self.entries[self.read_ptr.value]
-        # 更新读指针
-        self.read_ptr.value += 1
-        if (self.read_ptr.value >= self.depth):
-            self.read_ptr.value = 0
-            self.read_ptr.flag ^= 1
         # 是否GPF_hit
         gpf_hit = self.gpf_hit
         if gpf_hit:
@@ -60,6 +56,11 @@ class WayLookupModel(Model):
             self._gpf_valid = False
         else:
             gpf_data = None
+        # 更新读指针
+        self.read_ptr.value += 1
+        if (self.read_ptr.value == self.depth):
+            self.read_ptr.value = 0
+            self.read_ptr.flag ^= 1
         # 返回数据
         return True, data, gpf_hit, gpf_data
         
@@ -78,38 +79,42 @@ class WayLookupModel(Model):
         if (data.itlb_exception_0==2 or data.itlb_exception_1==2):
             self._gpf_valid = True
             self.gpf_data = gpf_data
-            self.gpf_ptr = self.write_ptr
+            self.gpf_ptr = deepcopy(self.write_ptr)
         # 更新写指针
         self.write_ptr.value += 1
-        if (self.write_ptr.value >= self.depth):
+        if (self.write_ptr.value == self.depth):
             self.write_ptr.value = 0
             self.write_ptr.flag ^= 1
         return True
     
     @driver_hook(agent_name="agent")
-    def bypass(self, data: EntryData, gpf_data: GpfData) -> Tuple[bool, Optional[EntryData], bool, Optional[GpfData]]:
+    def bypass(self, entry_data: EntryData, gpf_data: GpfData) -> Tuple[bool, Optional[EntryData], bool, Optional[GpfData]]:
         """Bypass读的特殊情况"""
         # 是否满足Bypass读的条件
         if not self.empty:
             raise IndexError("Can't bypass read while pipeline is not empty.")
+        # 写入entries
+        self.entries[self.write_ptr.value] = entry_data
         # 更新读写指针
         self.read_ptr.value += 1
-        if (self.read_ptr.value >= self.depth):
+        if (self.read_ptr.value == self.depth):
             self.read_ptr.value = 0
             self.read_ptr.flag ^= 1
         self.write_ptr.value += 1
-        if (self.write_ptr.value >= self.depth):
+        if (self.write_ptr.value == self.depth):
             self.write_ptr.value = 0
             self.write_ptr.flag ^= 1
         # 如果Bypass存在gpf信息，不使能gpf_valid
-        have_gpf = data.itlb_exception_0==2 or data.itlb_exception_1==2
+        have_gpf = entry_data.itlb_exception_0==2 or entry_data.itlb_exception_1==2
         if not have_gpf:
-            gpf_data = None
+            gpf_data_r = None
+        else:
+            gpf_data_r = deepcopy(gpf_data)
         # 直接返回数据
-        return True, data, have_gpf, gpf_data
+        return True, entry_data, have_gpf, gpf_data_r
     
     @driver_hook(agent_name="agent")
-    def update(self, update_data: UpdateData) -> bool:
+    def update(self, update_data: UpdateData):
         hit = False
         for i in range(self.depth):
             data = self.entries[i]
@@ -141,7 +146,6 @@ class WayLookupModel(Model):
                 data.waymask_1 = 0
                 hit = True
             
-
     @property
     def empty(self) -> bool:
         """队列是否空"""

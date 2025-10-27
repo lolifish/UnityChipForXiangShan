@@ -53,7 +53,7 @@ class WayLookupAgent(Agent):
         entry_data.meta_codes_0 = self.bundle.read_meta_codes_0.value
         entry_data.meta_codes_1 = self.bundle.read_meta_codes_1.value
         # GPF数据
-        has_gpf = self.bundle.read_itlb_exception_0.value == 2 or self.bundle.read_itlb_exception_1.value == 2
+        has_gpf = self.bundle.gpf_hit.value
         if has_gpf:
             gpf_data = GpfData()
             gpf_data.gpaddr = self.bundle.read_gpf_gpaddr.value
@@ -75,7 +75,8 @@ class WayLookupAgent(Agent):
         # 读失败不返回数据
         self.bundle.read_ready.value = 0
         await self.bundle.step()
-        if not success: return False, None, False, None
+        if not success: 
+            return False, None, False, None
         return True, entry_data, has_gpf, gpf_data
     
     @driver_method()
@@ -100,17 +101,19 @@ class WayLookupAgent(Agent):
         # 尝试等待ready
         _wait_cnt = 0
         success = False
-        while _wait_cnt < 5:
+        while _wait_cnt < 32:
             if (self.bundle.write_ready.value):
                 success = True
                 break
             _wait_cnt += 1
             await self.bundle.step()
         self.bundle.write_valid.value = 0
-        await self.bundle.step(5)
+        await self.bundle.step(1)
         # 返回是否成功
-        if not success: return False
-        else: return True
+        if not success: 
+            return False
+        else: 
+            return True
 
     @driver_method()
     async def update(self, update_data: UpdateData):
@@ -143,7 +146,14 @@ class WayLookupAgent(Agent):
         self.bundle.write_gpf_isForVSnonLeafPTE.value = gpf_data.isForVSnonLeafPTE
         # 读使能进入bypass
         self.bundle.read_ready.value = 1
-        await self.bundle.step()
+        _wait_cnt = 0
+        while True:
+            await self.bundle.step()
+            if (self.bundle.read_valid.value):
+                break
+            _wait_cnt += 1
+            if (_wait_cnt >= 32): 
+                raise ValueError("Bypass: _wait_cnt > 32")
         self.bundle.read_ready.value = 0
         self.bundle.write_valid.value = 0
         # 读取信号
@@ -163,12 +173,12 @@ class WayLookupAgent(Agent):
         # 读取GPF
         has_gpf = self.bundle.read_itlb_exception_0.value == 2 or self.bundle.read_itlb_exception_1.value == 2
         if has_gpf:
-            gpf_data = GpfData()
-            gpf_data.gpaddr = self.bundle.read_gpf_gpaddr.value
-            gpf_data.isForVSnonLeafPTE = self.bundle.read_gpf_isForVSnonLeafPTE.value
+            gpf_data_r = GpfData()
+            gpf_data_r.gpaddr = self.bundle.read_gpf_gpaddr.value
+            gpf_data_r.isForVSnonLeafPTE = self.bundle.read_gpf_isForVSnonLeafPTE.value
         else:
-            gpf_data = None
+            gpf_data_r = None
         await self.bundle.step()
-        return True, entry_data, has_gpf, gpf_data
+        return True, entry_data, has_gpf, gpf_data_r
 
 
