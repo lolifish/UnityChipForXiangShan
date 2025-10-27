@@ -66,7 +66,7 @@ class WayLookupAgent(Agent):
         # 尝试等待valid
         _wait_cnt = 0
         success = False
-        while _wait_cnt < 5:
+        while _wait_cnt < 32:
             if (self.bundle.read_valid.value):
                 success = True
                 break
